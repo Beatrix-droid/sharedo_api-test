@@ -1,0 +1,15 @@
+C:\Users\bfederici\desktop\sharedoapi\bin\Debug\net7.0\sharedoapi.exe
+C:\Users\bfederici\desktop\sharedoapi\bin\Debug\net7.0\sharedoapi.deps.json
+C:\Users\bfederici\desktop\sharedoapi\bin\Debug\net7.0\sharedoapi.runtimeconfig.json
+C:\Users\bfederici\desktop\sharedoapi\bin\Debug\net7.0\sharedoapi.dll
+C:\Users\bfederici\desktop\sharedoapi\bin\Debug\net7.0\sharedoapi.pdb
+C:\Users\bfederici\desktop\sharedoapi\obj\Debug\net7.0\sharedoapi.csproj.AssemblyReference.cache
+C:\Users\bfederici\desktop\sharedoapi\obj\Debug\net7.0\sharedoapi.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\bfederici\desktop\sharedoapi\obj\Debug\net7.0\sharedoapi.AssemblyInfoInputs.cache
+C:\Users\bfederici\desktop\sharedoapi\obj\Debug\net7.0\sharedoapi.AssemblyInfo.cs
+C:\Users\bfederici\desktop\sharedoapi\obj\Debug\net7.0\sharedoapi.csproj.CoreCompileInputs.cache
+C:\Users\bfederici\desktop\sharedoapi\obj\Debug\net7.0\sharedoapi.dll
+C:\Users\bfederici\desktop\sharedoapi\obj\Debug\net7.0\refint\sharedoapi.dll
+C:\Users\bfederici\desktop\sharedoapi\obj\Debug\net7.0\sharedoapi.pdb
+C:\Users\bfederici\desktop\sharedoapi\obj\Debug\net7.0\sharedoapi.genruntimeconfig.cache
+C:\Users\bfederici\desktop\sharedoapi\obj\Debug\net7.0\ref\sharedoapi.dll
