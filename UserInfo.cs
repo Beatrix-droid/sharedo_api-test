@@ -5,29 +5,29 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
-
 namespace Sharedo
 {
-    public class UserInfo{
+    public static class UserInfo{
         public static async Task<UserInfoResponse> GetProfile(string token){
             var request =  new HttpRequestMessage(HttpMethod.Get, $"{Program.IdentityBase}/ApplicationException/security/UserInfo");
             request.Headers.Add("accept", "application/json");
             request.Headers.Add("Authorization", $"Bearer {token}");
 
-            using (var client = new HttpClient()){
+            using (var client = new HttpClient())
+            {
                 var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
                 return await response.Content.ReadFromJsonAsync<UserInfoResponse>();
             }
-
         }
-    }
 
-    public void GetProfile(string token){
-            Console.WriteLine("hello");
-    }
-    public class UserInfoResponse{
+    } 
+    
+
+    public  class UserInfoResponse
+    {
+        //what the response will give you back
         public bool IsAuthenticated {get; set;}
         public string ClientId {get; set;}
         public Guid? Userid {get; set;}
@@ -42,7 +42,7 @@ namespace Sharedo
         public string Persona {get; set;}
         public List<string> GlobalPermissions {get; set;}
 
-        public UserInfoResponse(){
+        public  UserInfoResponse(){
             GlobalPermissions = new List<string>();
         }
         public void Prettyprint(){
@@ -60,16 +60,22 @@ namespace Sharedo
             PrettyprintGlobalPermissions();
             Console.WriteLine("}");
         }
+
+        private void Write(string key, object output){
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($"  {key}");
+            Console.ResetColor();
+            Console.WriteLine($": {output}");
+        }
+
         public void PrettyprintGlobalPermissions(){
             const int max =2;
-            var ouptut = String.Join(", ", GlobalPermissions.Take(max));
-            if (GlobalPermissions.Count > max) ouptut+= $" [...+{GlobalPermissions.Count - max} more]";
+            var output = String.Join(", ", GlobalPermissions.Take(max));
+            if (GlobalPermissions.Count > max) {
+                output+= $" [...+{GlobalPermissions.Count - max} more]";
             Write ("GlobalPermissions", output);
-    }
-    private void Write(string key, object output){
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write($"  {key}");
-        Console.ResetColor();
-        Console.WriteLine($": {output}");
+            }
+        }
+
     }
 }

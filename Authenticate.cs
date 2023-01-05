@@ -23,6 +23,8 @@ namespace Sharedo{
             //application entry point 
             var token = await GetToken();
             Console.WriteLine($"Got a token: {token}");
+            var user = await UserInfo.GetProfile(token);
+            user.PrettyPrint();
         }
         static async Task<string> GetToken(){
             //all the stuff I am going to post to the api
