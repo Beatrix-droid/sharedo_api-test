@@ -14,7 +14,11 @@ namespace Sharedo{
 
         private  static string ClientId = Config_values.Id;
         private static string ClienSecret = Config_values.Secret;
-        private static string IdentityBase = Config_values.Base;
+        public static string IdentityBase = Config_values.Base;
+
+        public static string ApiBase = Config_values.API_base;
+
+
         static async Task Main(){
             //application entry point 
             var token = await GetToken();
