@@ -1,56 +1,68 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Net.Http.Json;
-using System;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
-namespace Sharedo{
-
-    public class TokenResponse{
-        public string Acess_Token{get; set;}
-        public int Expires_in{get; set;}
-        public string Token_Type{get; set;}
-
-    }
-    public class Program{
-
-        private  static string ClientId = Config_values.Id;
-        private static string ClienSecret = Config_values.Secret;
-        public static string IdentityBase = Config_values.Base;
-
-        public static string ApiBase = Config_values.API_base;
-
-
-        static async Task Main(){
-            //application entry point 
-            var token = await GetToken();
-            Console.WriteLine($"Got a token: {token}");
-            var user = await UserInfo.GetProfile(token);
-            user.PrettyPrint();
-        }
-        static async Task<string> GetToken(){
-            //all the stuff I am going to post to the api
-            var body = new Dictionary<string, string>{
-                { "grant_type", "client_credentials"},
-                {"scope", "sharedo"},
-                {"client_id", ClientId},
-                {"client_secret", ClienSecret}
-            };
-            var request = new HttpRequestMessage(HttpMethod.Post, $"{IdentityBase}/connect/token");
-            request.Headers.Add("accept", "application/json"); //so can deserialise easily
-            request.Content = new FormUrlEncodedContent(body); //is the standard to have it form url encoded
-
-            using (var client = new HttpClient()){
-                var response = await client.SendAsync(request);
-                response.EnsureSuccessStatusCode();//throws an error if unsuccessful
-
-                //read response body
-                var responseBody = await response.Content.ReadFromJsonAsync<TokenResponse>();
-                return responseBody.Acess_Token;
-
-
+namespace ClientCredentials
+{
+    public class Program
+    {
+        static async Task Main(string[] args)
+        {
+            var config = new Parameters(args);
+            if( !config.IsValid )
+            {
+                Console.Write(config.Usage);
+                return;
             }
 
+            var token = await GetToken();
+            Console.WriteLine($"The token is {token}");
+            (await GetProfile(config, token)).PrettyPrint();
+        }
 
+        static async Task<string> GetToken()
+        {
+            var auth = Convert.ToBase64String(Encoding.UTF8.GetBytes($"client.fixed:not a secret"));
+
+            var body = new Dictionary<string, string>
+            {
+                { "grant_type", "Impersonate.Fixed" },
+                { "scope", "sharedo"}
+            };
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://vm-vnext-identity.sharedo.co.uk/connect/token");
+            request.Headers.Add("accept", "application/json");
+            request.Headers.Add("Authorization", $"Basic {auth}");
+            request.Content = new FormUrlEncodedContent(body);
+
+            using(var client = new HttpClient())
+            {
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var responseBody = await response.Content.ReadFromJsonAsync<TokenResponse>();
+                return responseBody.Access_Token;
+            }
+        }
+        
+        static async Task<UserInfoResponse> GetProfile(Parameters config, string token)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{config.Api}/api/security/userInfo");
+            request.Headers.Add("accept", "application/json");
+            request.Headers.Add("Authorization", $"Bearer {token}");
+
+            using(var client = new HttpClient())
+            {
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                
+
+                return await response.Content.ReadFromJsonAsync<UserInfoResponse>();
+            }
         }
     }
 }
-
