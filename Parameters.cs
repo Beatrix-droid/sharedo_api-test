@@ -32,13 +32,13 @@ namespace ClientCredentials
                                !string.IsNullOrWhiteSpace(ClientId) &&
                                !string.IsNullOrWhiteSpace(ClientSecret);
 
-        public string Usage => @"
+        public string Usage => @$"
 Invalid Parameters
 Usage:
-ClientCredentialsFixed.exe -Identity [https://vm-vnext-identity.sharedo.co.uk]
-                           -Api [https://vm-vnext.sharedo.co.uk/]
-                           -ClientId [client.secret]
-                           -ClientSecret [not a secret]
+ClientCredentialsFixed.exe -Identity [{Sensitive_data.Id}]
+                           -Api [{Sensitive_data.API}]
+                           -ClientId [{Sensitive_data.CID}]
+                           -ClientSecret [{Sensitive_data.Cs}]
         ";
     }
 }
