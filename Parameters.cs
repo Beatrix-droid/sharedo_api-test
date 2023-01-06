@@ -13,10 +13,10 @@ namespace ClientCredentials
         public Parameters(string[] args)
         {
             Args = args;
-            Identity = "https://vm-vnext-identity.sharedo.co.uk";
-            Api = "https://vm-vnext.sharedo.co.uk/";
-            ClientId = "client.fixed";
-            ClientSecret = "not a secret";
+            Identity = Sensitive_data.Id;
+            Api = Sensitive_data.API;
+            ClientId = Sensitive_data.CID;
+            ClientSecret = Sensitive_data.Cs;
         }
 
         private string GetParameter(string name)
