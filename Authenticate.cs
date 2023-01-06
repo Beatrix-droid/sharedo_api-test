@@ -19,14 +19,14 @@ namespace ClientCredentials
                 return;
             }
 
-            var token = await GetToken();
+            var token = await GetToken(config);
             Console.WriteLine($"The token is {token}");
             (await GetProfile(config, token)).PrettyPrint();
         }
 
-        static async Task<string> GetToken()
+        static async Task<string> GetToken(Parameters config)
         {
-            var auth = Convert.ToBase64String(Encoding.UTF8.GetBytes($"client.fixed:not a secret"));
+            var auth = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{config.ClientId}:{config.ClientSecret}"));
 
             var body = new Dictionary<string, string>
             {
@@ -34,7 +34,7 @@ namespace ClientCredentials
                 { "scope", "sharedo"}
             };
 
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://vm-vnext-identity.sharedo.co.uk/connect/token");
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{config.Identity}/connect/token");
             request.Headers.Add("accept", "application/json");
             request.Headers.Add("Authorization", $"Basic {auth}");
             request.Content = new FormUrlEncodedContent(body);
