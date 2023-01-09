@@ -20,12 +20,16 @@ namespace ClientCredentials
             }
 
             var token = await GetToken(config);
-            Console.WriteLine($"The token is {token}");
-            var timeSpan = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
-            Console.WriteLine((long)timeSpan.TotalMilliseconds);
-            //(await GetProfile(config, token)).PrettyPrint();
+            
+            Console.WriteLine(await GetWorkID(config, token,"D.TR.20.04861"));
+
+            // call this snippet if you wnat to print out the token Console.WriteLine($"The token is {token}");
+            //call this function if you want to get user info (await GetProfile(config, token)).PrettyPrint();
         }
 
+
+
+        //a method that authenticates via the api and returns a token allowing one to impersonate a user
         static async Task<string> GetToken(Parameters config)
         {
             var auth = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{config.ClientId}:{config.ClientSecret}"));
@@ -51,6 +55,8 @@ namespace ClientCredentials
             }
         }
         
+
+        // a method that makes an api call to get information on a sharedo user. Takes the authentication token as a parameter
         static async Task<UserInfoResponse> GetProfile(Parameters config, string token)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{config.Api}/api/security/userInfo");
@@ -64,6 +70,28 @@ namespace ClientCredentials
                 
 
                 return await response.Content.ReadFromJsonAsync<UserInfoResponse>();
+            }
+        }
+
+
+        // a method that retrieves a work Id item from a matter reference number. Takes the matter reference number and the authentication token as paramters
+
+        static async Task<WorkId> GetWorkID(Parameters config, string token, string MatterReference){
+
+                var timeSpan =  (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
+                var UnixEpoch = (long)timeSpan.TotalMilliseconds;
+
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{config.Api}/api/searches/quick/legal-cases/?&q={MatterReference}&_={UnixEpoch}");
+                request.Headers.Add("accept", "application/json");
+                request.Headers.Add("Authorization", $"Bearer {token}");
+
+                using(var client = new HttpClient())
+            {
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                
+
+                return await response.Content.ReadFromJsonAsync<WorkId>();
             }
         }
 
