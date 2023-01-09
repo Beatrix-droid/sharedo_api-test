@@ -21,7 +21,9 @@ namespace ClientCredentials
 
             var token = await GetToken(config);
             Console.WriteLine($"The token is {token}");
-            (await GetProfile(config, token)).PrettyPrint();
+            var timeSpan = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
+            Console.WriteLine((long)timeSpan.TotalMilliseconds);
+            //(await GetProfile(config, token)).PrettyPrint();
         }
 
         static async Task<string> GetToken(Parameters config)
@@ -64,5 +66,8 @@ namespace ClientCredentials
                 return await response.Content.ReadFromJsonAsync<UserInfoResponse>();
             }
         }
+
+        //string MatterReference = "WUBYA/66899";
+        //string url= $"https://vm-vnext.sharedo.co.uk/api/searches/quick/legal-cases/?&q={MatterReference}&_=1673258376973";
     }
 }

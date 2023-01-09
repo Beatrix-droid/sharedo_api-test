@@ -35,12 +35,10 @@ namespace ClientCredentials
         public string Usage => @$"
 Invalid Parameters
 Usage:
-ClientCredentialsFixed.exe -Identity [{Sensitive_data.Id}]
+ClientCredentialsFixed.exe -Identity [{Sensitive_data.Id}] 
                            -Api [{Sensitive_data.API}]
                            -ClientId [{Sensitive_data.CID}]
                            -ClientSecret [{Sensitive_data.Cs}]
         ";
     }
 }
-
-//a comment
