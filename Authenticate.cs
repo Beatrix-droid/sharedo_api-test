@@ -20,11 +20,15 @@ namespace ClientCredentials
             }
 
             var token = await GetToken(config);
-            var work_id_response = await GetWorkID(config, token,"D.TR.20.04861");
-            Console.WriteLine(work_id_response.results[0].entityId);
 
-            // call this snippet if you want to print out the token Console.WriteLine($"The token is {token}");
-            //call this function if you want to get user info (await GetProfile(config, token)).PrettyPrint();
+            /// Commented below is a sample function call where a matter reference number is passed in, and the work item's entity id is returned
+           // var work_id_response = await GetWorkID(config, token,"D.TR.20.04861");
+            // Console.WriteLine(work_id_response.results[0].entityId);
+
+            // call this snippet if you want to print out the token:
+            // Console.WriteLine($"The token is {token}");
+            //call this function if you want to get user info:
+            // (await GetProfile(config, token)).PrettyPrint();
         }
 
 
