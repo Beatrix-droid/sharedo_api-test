@@ -20,10 +20,10 @@ namespace ClientCredentials
             }
 
             var token = await GetToken(config);
-            
-            Console.WriteLine(await GetWorkID(config, token,"D.TR.20.04861"));
+            var work_id_response = await GetWorkID(config, token,"D.TR.20.04861");
+            Console.WriteLine(work_id_response.results[0].entityId);
 
-            // call this snippet if you wnat to print out the token Console.WriteLine($"The token is {token}");
+            // call this snippet if you want to print out the token Console.WriteLine($"The token is {token}");
             //call this function if you want to get user info (await GetProfile(config, token)).PrettyPrint();
         }
 
