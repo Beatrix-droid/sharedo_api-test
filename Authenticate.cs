@@ -32,6 +32,7 @@ namespace ClientCredentials
         }
 
 
+<<<<<<< HEAD
 
         //a method that authenticates via the api and returns a token allowing one to impersonate a user
         static async Task<string> GetToken(Parameters config)
@@ -78,6 +79,8 @@ namespace ClientCredentials
         }
 
 
+=======
+>>>>>>> 92cb0d5fc8fe88caf0b7b929d076e73d9426cce1
         // a method that retrieves a work Id item from a matter reference number. Takes the matter reference number and the authentication token as paramters
 
         static async Task<string> GetWorkID(Parameters config, string token, string MatterReference){
@@ -95,9 +98,16 @@ namespace ClientCredentials
                 response.EnsureSuccessStatusCode();
                 
 
+<<<<<<< HEAD
                 WorkId deserialised_json = await response.Content.ReadFromJsonAsync<WorkId>();
                 string id = deserialised_json.results[0].entityId;
                 return id;
+=======
+                var deserialised_json = await response.Content.ReadFromJsonAsync<WorkId>();
+                string id = deserialised_json.results[0].entityId;
+                return id;
+
+>>>>>>> 92cb0d5fc8fe88caf0b7b929d076e73d9426cce1
             }
         }
 
