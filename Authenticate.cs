@@ -21,20 +21,17 @@ namespace ClientCredentials
 
             var token = await GetToken(config);
 
-            /// Commented below is a sample function call where a matter reference number is passed in, and the work item's entity id is returned
-           // var work_id_response = await GetWorkID(config, token,"D.TR.20.04861");
+          //a sample call to get a work id
             Console.WriteLine(await GetWorkID(config, token,"D.TR.20.04861"));
 
-            // call this snippet if you want to print out the token:
-            // Console.WriteLine($"The token is {token}");
-            //call this function if you want to get user info:
-            // (await GetProfile(config, token)).PrettyPrint();
+            Console.WriteLine(await PostComment(config, token, "D.TR.20.04861", "comment posted with an api!"));
+
         }
 
 
 
-        //a method that authenticates via the api and returns a token allowing one to impersonate a user
         static async Task<string> GetToken(Parameters config)
+        //a method that authenticates via the api and returns a token allowing one to impersonate a user
         {
             var auth = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{config.ClientId}:{config.ClientSecret}"));
 
@@ -60,8 +57,8 @@ namespace ClientCredentials
         }
         
 
-        // a method that makes an api call to get information on a sharedo user. Takes the authentication token as a parameter
         static async Task<UserInfoResponse> GetProfile(Parameters config, string token)
+        // a method that makes an api call to get information on a sharedo user. Takes the authentication token as a parameter
         {
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"{config.Api}/api/security/userInfo");
             request.Headers.Add("accept", "application/json");
@@ -78,10 +75,10 @@ namespace ClientCredentials
         }
 
 
-        // a method that retrieves a work Id item from a matter reference number. Takes the matter reference number and the authentication token as paramters
 
-        static async Task<string> GetWorkID(Parameters config, string token, string MatterReference){
-
+        static async Task<string> GetWorkID(Parameters config, string token, string MatterReference)
+        {
+         // a method that retrieves a work Id item from a matter reference number. Takes the matter reference number and the authentication token as paramters
                 var timeSpan =  (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
                 var UnixEpoch = (long)timeSpan.TotalMilliseconds;
 
@@ -100,8 +97,20 @@ namespace ClientCredentials
                 return id;
             }
         }
+        static async Task<string> PostComment(Parameters config, string token, string MatterReference, string comment){
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"{config.Api}/api/comments/");
+            request.Headers.Add("accept", "application/json");
+            request.Headers.Add("Authorization", $"Bearer {token}");
 
-        //string MatterReference = "WUBYA/66899";
-        //string url= $"https://vm-vnext.sharedo.co.uk/api/searches/quick/legal-cases/?&q={MatterReference}&_=1673258376973";
-    }
+            using (HttpClient client = new HttpClient())
+            {
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            string message= "Comment posted successfully!";
+            return message;
+            
+            }
+
+        }
+ }
 }
