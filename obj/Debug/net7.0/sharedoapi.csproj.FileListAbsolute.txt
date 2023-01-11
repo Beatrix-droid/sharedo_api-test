@@ -13,3 +13,5 @@ C:\Users\bfederici\desktop\sharedoapi\obj\Debug\net7.0\refint\sharedoapi.dll
 C:\Users\bfederici\desktop\sharedoapi\obj\Debug\net7.0\sharedoapi.pdb
 C:\Users\bfederici\desktop\sharedoapi\obj\Debug\net7.0\sharedoapi.genruntimeconfig.cache
 C:\Users\bfederici\desktop\sharedoapi\obj\Debug\net7.0\ref\sharedoapi.dll
+C:\Users\bfederici\desktop\sharedoapi\bin\Debug\net7.0\Newtonsoft.Json.dll
+C:\Users\bfederici\desktop\sharedoapi\obj\Debug\net7.0\sharedoapi.csproj.CopyComplete

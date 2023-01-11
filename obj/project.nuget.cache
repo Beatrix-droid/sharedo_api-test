@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "60fEn44kcVINQVQ4+rytlXJ8Gms6YKRjCQKIpdtbvMJx1+Yop2Nf3grdg+6jh2TeGx9+aTNthX/o5xm+QcJjJA==",
+  "dgSpecHash": "dAp/EUUsQInSOMaBL7DPbIvXE9IwjQQD/uv5MWMoMuHP3xGnTHoYEi3qH0sWPeMg/WI+h8CMMy/52uEKnN0gSw==",
   "success": true,
   "projectFilePath": "C:\\Users\\bfederici\\desktop\\sharedoapi\\sharedoapi.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\bfederici\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
+  ],
   "logs": []
 }

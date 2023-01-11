@@ -4,7 +4,9 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace ClientCredentials
 {
@@ -97,15 +99,32 @@ namespace ClientCredentials
                 return id;
             }
         }
-        static async Task<string> PostComment(Parameters config, string token, string MatterReference, string comment){
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"{config.Api}/api/comments/");
-            request.Headers.Add("accept", "application/json");
-            request.Headers.Add("Authorization", $"Bearer {token}");
+        static async Task<string> PostComment(Parameters config, string token, string MatterReference, string your_comment){
+            
+            //get the appropriate workid item and set up the api endpoint
+            string work_id = await GetWorkID(config,token,MatterReference);
+            var endpoint= new Uri($"{config.Api}/api/comments/");
+
+            //create the comment
+            Comment newcomment = new Comment(){
+                comment=$"<p>{your_comment}</p>",
+                sharedoId= $"{work_id}"
+            };
+            //convert it to json by serializing the class object
+            var newcomment_json = JsonConvert.SerializeObject(newcomment);
+            StringContent payload = new StringContent(newcomment_json, Encoding.UTF8,"application/json");
+            //send it to the api
+
+            
 
             using (HttpClient client = new HttpClient())
             {
-            var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"{config.Api}/api/comments/");
+            request.Headers.Add("accept", "application/json");
+            request.Headers.Add("Authorization", $"Bearer {token}");
+            var result = await client.PostAsync(endpoint, payload);
+            result.EnsureSuccessStatusCode();
             string message= "Comment posted successfully!";
             return message;
             
