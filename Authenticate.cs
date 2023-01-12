@@ -24,9 +24,18 @@ namespace ClientCredentials
             var token = await GetToken(config);
 
           //a sample call to get a work id
-            Console.WriteLine(await GetWorkID(config, token,"D.TR.20.04861"));
 
-            Console.WriteLine(await PostComment(config, token, "D.TR.20.04861", "comment posted with an api!"));
+        string work_id = await GetWorkID(config, token,"D.TR.20.04861");
+        int payment_id = await GetCategoryId(config, token, work_id);
+        string sys_name = await SharedoSysName(config, token, work_id);
+
+        Console.WriteLine("the payment id is " + payment_id.ToString());
+        Console.WriteLine("the payment id is " + sys_name);
+
+
+          
+
+
 
         }
 
@@ -99,37 +108,54 @@ namespace ClientCredentials
                 return id;
             }
         }
-        static async Task<string> PostComment(Parameters config, string token, string MatterReference, string your_comment){
-            
-            //get the appropriate workid item and set up the api endpoint
-            string work_id = await GetWorkID(config,token,MatterReference);
-            var endpoint= new Uri($"{config.Api}/api/comments/");
 
-            //create the comment
-            Comment newcomment = new Comment(){
-                comment=$"<p>{your_comment}</p>",
-                sharedoId= $"{work_id}"
-            };
-            //convert it to json by serializing the class object
-            var newcomment_json = JsonConvert.SerializeObject(newcomment);
-            StringContent payload = new StringContent(newcomment_json, Encoding.UTF8,"application/json");
-            //send it to the api
 
-            
+        static async Task<int> GetCategoryId(Parameters config, string token, string workid)
+        // a method that returns a category id when we feed in its  work item's id: 
 
-            using (HttpClient client = new HttpClient())
+        {
+                var timeSpan =  (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
+                var UnixEpoch = (long)timeSpan.TotalMilliseconds;
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"{config.Api}/api/sharedo/{workid}/base?_={UnixEpoch}");
+                request.Headers.Add("accept", "application/json");
+                request.Headers.Add("Authorization", $"Bearer {token}");
+
+                using(HttpClient client = new HttpClient())
             {
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"{config.Api}/api/comments/");
-            request.Headers.Add("accept", "application/json");
-            request.Headers.Add("Authorization", $"Bearer {token}");
-            var result = await client.PostAsync(endpoint, payload);
-            result.EnsureSuccessStatusCode();
-            string message= "Comment posted successfully!";
-            return message;
-            
+                CategoryId deserialised_json = await response.Content.ReadFromJsonAsync<CategoryId>();
+                int id = deserialised_json.categoryId;
+                return id;GCNotificationStatus 
             }
 
         }
- }
+
+        static async Task<string> SharedoSysName(Parameters config, string token, string workid)
+        // a method that returns a category id when we feed in its  work item's id: 
+
+        {
+                var timeSpan =  (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
+                var UnixEpoch = (long)timeSpan.TotalMilliseconds;
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"{config.Api}/api/sharedo/{workid}/base?_={UnixEpoch}");
+                request.Headers.Add("accept", "application/json");
+                request.Headers.Add("Authorization", $"Bearer {token}");
+
+                using(HttpClient client = new HttpClient())
+            {
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                CategoryId deserialised_json = await response.Content.ReadFromJsonAsync<CategoryId>();
+                string sysName = deserialised_json.sharedoTypeSystemName;
+                return sysName;
+
+
+    
+        }
+    }
+    }
 }
