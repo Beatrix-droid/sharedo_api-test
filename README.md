@@ -34,4 +34,7 @@ The categoryid, workid and sharedo system name are some of the parameters needed
 * To fill in the rpa section of the forms via apis in sharedo for a particular matter type, this is the endpoint you need to call.
 {API_BASE_URL}/api/formbuilder/2381f919-9451-4242-96f0-52ecbb183f18?ctx_sharedoId={work_id}&ctx_sharedoCategoryId={category_id}&ctx_jurisdiction=5002601&ctx_sharedoTypeSystemName={sharedo sys_name}
 
+the json sent across in this request must be in this format:
+{"sharedoId":"959772bb-0297-4dae-b86d-ab7a00ab6ca6","formData":{"vm-rpa-process-6-01":"500000128","vm-rpa-process-12":"500000130","vm-rpa-process-13-01":"500000132"}}
+
 (still working on identifying what the id after the formbuilder is and that the ctx_jurisdiction is, as they will vary from matter type to matter type)
