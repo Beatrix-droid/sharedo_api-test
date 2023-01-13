@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace ClientCredentials{
 
     public class RpaForm{
@@ -7,11 +9,15 @@ namespace ClientCredentials{
     }
 
     public class Form{
-        public int vm-rpa-process-6-01 {get;set;}
-        public int vm-rpa-process-12 {get; set;}
+        
+        [JsonProperty(PropertyName="vm-rpa-process-6-01")]
+        public int vmRpaProcess601 {get;set;}
+        
+        [JsonProperty(PropertyName="vm-rpa-process-12")]
+        public int vmRpaProcess12 {get; set;}
 
-        public int vm-rpa-process-13-01 {get; set;}
+        [JsonProperty(PropertyName="vm-rpa-process-13-01")]
+        public int vmRpaProcess1301 {get; set;}
     }
 }
 
-//{"vm-rpa-process-6-01":"500000128","vm-rpa-process-12":"500000130","vm-rpa-process-13-01":"500000132"}
