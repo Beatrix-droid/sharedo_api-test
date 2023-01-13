@@ -30,3 +30,8 @@ There are two methods in authenticate.cs that use this class: the first is GetCa
 The second method is called SharedoSystem name, and returns a workid's system name.
 This is the api endpoint: "{API_BASE_URL}/api/sharedo/{workid}/base?_={UnixEpoch}"
 The categoryid, workid and sharedo system name are some of the parameters needed to call another api that fills in a form for a particular matter reference
+
+* To fill in the rpa section of the forms via apis in sharedo for a particular matter type, this is the endpoint you need to call.
+{API_BASE_URL}/api/formbuilder/2381f919-9451-4242-96f0-52ecbb183f18?ctx_sharedoId={work_id}&ctx_sharedoCategoryId={category_id}&ctx_jurisdiction=5002601&ctx_sharedoTypeSystemName={sharedo sys_name}
+
+(still working on identifying what the id after the formbuilder is and that the ctx_jurisdiction is, as they will vary from matter type to matter type)

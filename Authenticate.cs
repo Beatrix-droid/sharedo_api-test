@@ -28,7 +28,7 @@ namespace ClientCredentials
         string work_id = await GetWorkID(config, token,"D.TR.20.04861");
         int category_id = await GetCategoryId(config, token, work_id);
         string sys_name = await SharedoSysName(config, token, work_id);
-
+        Console.WriteLine("the work id is " + work_id);
         Console.WriteLine("the category id is " + category_id.ToString());
         Console.WriteLine("the sharedo system name is " + sys_name);
         }
