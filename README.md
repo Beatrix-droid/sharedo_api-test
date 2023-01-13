@@ -31,6 +31,11 @@ The second method is called SharedoSystem name, and returns a workid's system na
 This is the api endpoint: "{API_BASE_URL}/api/sharedo/{workid}/base?_={UnixEpoch}"
 The categoryid, workid and sharedo system name are some of the parameters needed to call another api that fills in a form for a particular matter reference
 
+* Comments.cs contains the Comment class. This class is the class used by the PostComment function, to create a comment, serialize it and send it across. The PostComment function allows a user to post a comment given by specifying the comment and the workid.
+The endpoint is {config.Api}api/comments and the json in the content you want to post must be in this form:
+{"comment":"<p>,<your comment></p>","sharedoId": workId}  Be sure to enclose your comment in html <p> tags!
+        
+
 * To fill in the rpa section of the forms via apis in sharedo for a particular matter type, this is the endpoint you need to call.
 {API_BASE_URL}/api/formbuilder/2381f919-9451-4242-96f0-52ecbb183f18?ctx_sharedoId={work_id}&ctx_sharedoCategoryId={category_id}&ctx_jurisdiction=5002601&ctx_sharedoTypeSystemName={sharedo sys_name}
 

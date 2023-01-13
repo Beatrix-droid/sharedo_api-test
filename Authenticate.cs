@@ -26,11 +26,16 @@ namespace ClientCredentials
           //a sample call to get a work id
 
         string work_id = await GetWorkID(config, token,"D.TR.20.04861");
+        
+        
         int category_id = await GetCategoryId(config, token, work_id);
-        string sys_name = await SharedoSysName(config, token, work_id);
+        //string sys_name = await SharedoSysName(config, token, work_id);
         Console.WriteLine("the work id is " + work_id);
-        Console.WriteLine("the category id is " + category_id.ToString());
-        Console.WriteLine("the sharedo system name is " + sys_name);
+
+        Console.WriteLine(await PostComment(config, token, work_id,"comment posted by Beatrice by calling the Api!"));
+
+        //Console.WriteLine("the category id is " + category_id.ToString());
+        //Console.WriteLine("the sharedo system name is " + sys_name);
         }
 
 
@@ -146,10 +151,45 @@ namespace ClientCredentials
                 CategoryId deserialised_json = await response.Content.ReadFromJsonAsync<CategoryId>();
                 string sysName = deserialised_json.sharedoTypeSystemName;
                 return sysName;
-
-
-    
         }
+    }
+
+    static async Task<string> PostComment(Parameters config, string token, string workId, string yourComment)
+        // a method that allows a user to post a comment to a specific workid
+    {   
+        HttpClient client = new HttpClient();
+        HttpRequestMessage request;
+        HttpResponseMessage response;
+
+        string url = $"{config.Api}api/comments";
+
+        request = new HttpRequestMessage(HttpMethod.Post, url);
+
+        //create a sample comment object
+        Comment new_comment = new Comment{
+                comment = $"<p>{yourComment}</p>",
+                sharedoId = workId,
+        };
+
+        //serialise it and prepare the payload
+        var JsonifiedComment= JsonConvert.SerializeObject(new_comment);
+        StringContent JsonString = new StringContent( JsonifiedComment, Encoding.UTF8, "application/json");
+
+        //attach the payload to the request message
+        request.Content= JsonString; //content we are sending across
+
+        //now add the headers to authenticate:
+        client.DefaultRequestHeaders.Add("accept", "application/json");
+        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+
+        //send request over and await the response
+        response =await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+
+        var responsebody = await  response.Content.ReadAsStringAsync();
+        return responsebody;
+        //Console.WriteLine($"Message has been sent!");
+        //Console.WriteLine(responsebody);
     }
     }
 }
