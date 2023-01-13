@@ -26,17 +26,11 @@ namespace ClientCredentials
           //a sample call to get a work id
 
         string work_id = await GetWorkID(config, token,"D.TR.20.04861");
-        int payment_id = await GetCategoryId(config, token, work_id);
+        int category_id = await GetCategoryId(config, token, work_id);
         string sys_name = await SharedoSysName(config, token, work_id);
 
-        Console.WriteLine("the payment id is " + payment_id.ToString());
-        Console.WriteLine("the payment id is " + sys_name);
-
-
-          
-
-
-
+        Console.WriteLine("the category id is " + category_id.ToString());
+        Console.WriteLine("the sharedo system name is " + sys_name);
         }
 
 
@@ -127,14 +121,14 @@ namespace ClientCredentials
                 response.EnsureSuccessStatusCode();
 
                 CategoryId deserialised_json = await response.Content.ReadFromJsonAsync<CategoryId>();
-                int id = deserialised_json.categoryId;
-                return id;GCNotificationStatus 
+                int categoryId = deserialised_json.categoryId;
+                return categoryId;
             }
 
         }
 
         static async Task<string> SharedoSysName(Parameters config, string token, string workid)
-        // a method that returns a category id when we feed in its  work item's id: 
+        // a method that returns a work id's system name when we feed in its  work item's id: 
 
         {
                 var timeSpan =  (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
