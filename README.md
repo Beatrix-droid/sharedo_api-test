@@ -33,7 +33,10 @@ The categoryid, workid and sharedo system name are some of the parameters needed
 
 * Comments.cs contains the Comment class. This class is the class used by the PostComment function, to create a comment, serialize it and send it across. The PostComment function allows a user to post a comment given by specifying the comment and the workid.
 The endpoint is {config.Api}api/comments and the json in the content you want to post must be in this form:
-{"comment":"<p>,<your comment></p>","sharedoId": workId}  Be sure to enclose your comment in html <p> tags!
+
+##### {"comment":"<p>,<your comment></p>","sharedoId": workId}  
+
+Be sure to enclose your comment in html <p> tags!
         
 
 * To fill in the rpa section of the forms via apis in sharedo for a particular matter type, this is the endpoint you need to call.
