@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
+﻿
 using System.Net.Http.Json;
 using System.Text;
-using System.Text.Json;
 
-using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ClientCredentials
 {
@@ -33,6 +30,7 @@ namespace ClientCredentials
             //Console.WriteLine(await PostComment(config, token, work_id,"comment posted by Beatrice by calling the Api!"));
             //Console.WriteLine("the category id is " + category_id.ToString());
             //Console.WriteLine("the sharedo system name is " + sys_name);
+            Console.WriteLine(GetPayMentRequests(config, token, work_id));
         
         }
 
@@ -76,8 +74,6 @@ namespace ClientCredentials
                 {
                     var response = await client.SendAsync(request);
                     response.EnsureSuccessStatusCode();
-                    
-
                     return await response.Content.ReadFromJsonAsync<UserInfoResponse>();
                 }
             }
@@ -182,18 +178,19 @@ namespace ClientCredentials
                 response =await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
-                var responsebody = await  response.Content.ReadAsStringAsync();
+                var responsebody =response.Content.ReadAsStringAsync();
+
+                JObject obj = (JObject)JsonConvert.DeserializeObject(await responsebody);
                 
                 //Console.WriteLine($"Message has been sent!");
                 //Console.WriteLine(responsebody);
             }
         
 
-        static async Task<string> GetPayMentRequests(Parameters Config, string token, string workid)
+        static async Task<PaymentRequestInfo> GetPayMentRequests(Parameters Config, string token, string workid)
             // a function that gets payment request info based on the work if you pass in
             {
                 string url = $"{Config.Api}/api/listview/core-case-payments/20/1/paymentRequestDate/asc/?view=table&withCounts=1&contextId={workid}";
-
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Add("accept", "application/json");
                 request.Headers.Add("Authorization", $"Bearer {token}");
@@ -202,10 +199,10 @@ namespace ClientCredentials
                 {
                     var response = await client.SendAsync(request);
                     response.EnsureSuccessStatusCode();
-
-                    CategoryId deserialised_json = await response.Content.ReadFromJsonAsync<CategoryId>();
-                    string sysName = deserialised_json.sharedoTypeSystemName;
-                    return sysName;
+                    var jsonString = await response.Content.ReadAsStreamAsync();
+                    PaymentRequestInfo deserialised_json = await response.Content.ReadFromJsonAsync<PaymentRequestInfo>();
+                
+                    return deserialised_json;
                 } 
             }
     }
