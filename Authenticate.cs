@@ -30,7 +30,10 @@ namespace ClientCredentials
             //Console.WriteLine(await PostComment(config, token, work_id,"comment posted by Beatrice by calling the Api!"));
             //Console.WriteLine("the category id is " + category_id.ToString());
             //Console.WriteLine("the sharedo system name is " + sys_name);
-            Console.WriteLine(GetPayMentRequests(config, token, work_id));
+            PaymentRequestInfo payment_request_info = await GetPayMentRequests(config, token, work_id);
+            int payment_request_reference_number = Convert.ToInt32(payment_request_info.rows[0].data.reference);
+            string payment_request_title = payment_request_info.rows[0].data.title;
+.           string payment_request_subtitle = payment_request_info.rows[0].subTitle;
         
         }
 
@@ -187,7 +190,7 @@ namespace ClientCredentials
             }
         
 
-        static async Task<PaymentRequestInfo> GetPayMentRequests(Parameters Config, string token, string workid)
+        static async Task<> GetPayMentRequests(Parameters Config, string token, string workid)
             // a function that gets payment request info based on the work if you pass in
             {
                 string url = $"{Config.Api}/api/listview/core-case-payments/20/1/paymentRequestDate/asc/?view=table&withCounts=1&contextId={workid}";
@@ -205,6 +208,8 @@ namespace ClientCredentials
                     return deserialised_json;
                 } 
             }
+
+
     }
 }
 

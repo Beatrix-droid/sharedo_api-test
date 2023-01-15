@@ -1,7 +1,7 @@
 // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
 
 namespace ClientCredentials{
-    public class PaymentRequestInfo
+    public class Ancestor
     {
         public object reference { get; set; }
         public Title title { get; set; }
@@ -63,7 +63,7 @@ namespace ClientCredentials{
         public Role role { get; set; }
         public RefRole refRole { get; set; }
         public KeyDate keyDate { get; set; }
-        public PaymentRequestInfo ancestor { get; set; }
+        public Ancestor ancestor { get; set; }
         public AncestorRole ancestorRole { get; set; }
         public object appointmentTitle { get; set; }
         public object expectedStart { get; set; }
@@ -125,7 +125,7 @@ namespace ClientCredentials{
         public string supplier { get; set; }
     }
 
-    public class Root
+    public class PaymentRequestInfo
     {
         public int resultCount { get; set; }
         public List<Row> rows { get; set; }
