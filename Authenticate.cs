@@ -17,25 +17,18 @@ namespace ClientCredentials
                 Console.Write(config.Usage);
                 return;
             }
-
             var token = await GetToken(config);
-
             //a sample call to get a work id
             string work_id = await GetWorkID(config, token,"BISJQ"); 
-            int category_id = await GetCategoryId(config, token, work_id);
+            //int category_id = await GetCategoryId(config, token, work_id);
+            await Create_A_Task(config, token, work_id, "post a task with c#", "c# > uipath");
             
-            //string sys_name = await SharedoSysName(config, token, work_id);
-            Console.WriteLine("the work id is " + work_id);
-            
-            //Console.WriteLine(await PostComment(config, token, work_id,"comment posted by Beatrice by calling the Api!"));
-            //Console.WriteLine("the category id is " + category_id.ToString());
-            //Console.WriteLine("the sharedo system name is " + sys_name);
-            PaymentRequestInfo payment_request_info = await GetPayMentRequests(config, token, work_id);
-            int payment_request_reference_number = Convert.ToInt32(payment_request_info.rows[0].data.reference);
-            string payment_request_title = payment_request_info.rows[0].data.title;
-.           string payment_request_subtitle = payment_request_info.rows[0].subTitle;
-        
         }
+    
+    
+        
+        
+    
 
 
 
@@ -67,7 +60,7 @@ namespace ClientCredentials
         
 
         static async Task<UserInfoResponse> GetProfile(Parameters config, string token)
-            // a method that makes an api call to get information on a sharedo user. Takes the authentication token as a parameter
+         //a method that makes an api call to get information on a sharedo user. Takes the authentication token as a parameter
             {
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"{config.Api}/api/security/userInfo");
                 request.Headers.Add("accept", "application/json");
@@ -190,7 +183,7 @@ namespace ClientCredentials
             }
         
 
-        static async Task<> GetPayMentRequests(Parameters Config, string token, string workid)
+    static async Task<PaymentRequestInfo> GetPayMentRequests(Parameters Config, string token, string workid)
             // a function that gets payment request info based on the work if you pass in
             {
                 string url = $"{Config.Api}/api/listview/core-case-payments/20/1/paymentRequestDate/asc/?view=table&withCounts=1&contextId={workid}";
@@ -208,10 +201,66 @@ namespace ClientCredentials
                     return deserialised_json;
                 } 
             }
+    static async Task Create_A_Task(Parameters Config, string token,  string work_item_id,string task_title, string task_description)
+    {
+
+        HttpClient client = new HttpClient();
+                HttpRequestMessage request;
+                HttpResponseMessage response;
+
+        string url = $"{Config.Api}/api/aspects/sharedos/";
+        request = new HttpRequestMessage(HttpMethod.Post, url);
+
+        //create a sample comment object
+        AspectData aspects = new AspectData{
+            tags="{\"tags\":[]}",
+            taskDetails="{}",
+            taskDueDate="{\"dueDateTime\":\"2023-01-26T16:12:00+00:00\",\"dueDateTime_timeZone\":\"Europe/London\",\"reminders\":[]}",
+            workScheduling="{\"linkDueDateToExpectedStart\":false,\"linkDueDateToExpectedEnd\":true}"
+        };
+        
+        List<Object> related = new List<object>{
+        };
+
+        Create_A_Task new_task = new Create_A_Task{
+                                                    aspectData=aspects,
+                                                    description=$"{task_description}<br>",
+                                                    instanceId="7",
+                                                    originalSharedoType="Task",
+                                                    parentSharedoId=work_item_id,
+                                                    phaseIsOpen=true,
+                                                    priorityId=9001,
+                                                    referenceIsUserProvided=false,
+                                                    relatedSharedos=related,
+                                                    sharedoTypeSystemName="task",
+                                                    title=task_title,
+                                                    titleIsUserProvided=true
+                                                };
+
+                //serialise it and prepare the payload
+                var JsonifiedComment= JsonConvert.SerializeObject(new_task);
+                StringContent JsonString = new StringContent( JsonifiedComment, Encoding.UTF8, "application/json");
+                
+                //attach the payload to the request message
+                request.Content= JsonString; //content we are sending across
+
+                //now add the headers to authenticate:
+                client.DefaultRequestHeaders.Add("accept", "application/json");
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+
+                 //send request over and await the response
+                response =await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var responsebody =response.Content.ReadAsStringAsync();
+
+    
+                Console.WriteLine(response.StatusCode.ToString());
+                
+        }
 
 
     }
 }
-
 
 
