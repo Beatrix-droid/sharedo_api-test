@@ -21,7 +21,9 @@ namespace ClientCredentials
             //a sample call to get a work id
             string work_id = await GetWorkID(config, token,"BISJQ"); 
             //int category_id = await GetCategoryId(config, token, work_id);
-            await Create_A_Task(config, token, work_id, "post a task with c#", "c# > uipath");
+            
+            await Create_A_Task(config, token, work_id, $"post task no 7 with c#", "c# > uipath");
+        
             
         }
     
@@ -201,8 +203,11 @@ namespace ClientCredentials
                     return deserialised_json;
                 } 
             }
-    static async Task Create_A_Task(Parameters Config, string token,  string work_item_id,string task_title, string task_description)
+    static async Task<string> Create_A_Task(Parameters Config, string token,  string work_item_id,string task_title, string task_description)
     {
+
+//a function that creates a task on sharedo for a particular matter. Accepts a task title and task description, and the work item id you want to
+// assign the task to. Returns the task id as a string
 
         HttpClient client = new HttpClient();
                 HttpRequestMessage request;
@@ -211,7 +216,7 @@ namespace ClientCredentials
         string url = $"{Config.Api}/api/aspects/sharedos/";
         request = new HttpRequestMessage(HttpMethod.Post, url);
 
-        //create a sample comment object
+        //create a sample task object
         AspectData aspects = new AspectData{
             tags="{\"tags\":[]}",
             taskDetails="{}",
@@ -238,8 +243,8 @@ namespace ClientCredentials
                                                 };
 
                 //serialise it and prepare the payload
-                var JsonifiedComment= JsonConvert.SerializeObject(new_task);
-                StringContent JsonString = new StringContent( JsonifiedComment, Encoding.UTF8, "application/json");
+                var JsonifiedTask= JsonConvert.SerializeObject(new_task);
+                StringContent JsonString = new StringContent( JsonifiedTask, Encoding.UTF8, "application/json");
                 
                 //attach the payload to the request message
                 request.Content= JsonString; //content we are sending across
@@ -248,18 +253,15 @@ namespace ClientCredentials
                 client.DefaultRequestHeaders.Add("accept", "application/json");
                 client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
 
-                 //send request over and await the response
+                //send request over and await the response
                 response =await client.SendAsync(request);
-                response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode(); //prints out an error if the response was not 200
 
-                var responsebody =response.Content.ReadAsStringAsync();
-
-    
-                Console.WriteLine(response.StatusCode.ToString());
-                
+                var responsebody= await response.Content.ReadAsStringAsync();
+                string task_id=responsebody.ToString();
+                Console.WriteLine("task has been posted!");
+                return task_id;        
         }
-
-
     }
 }
 
