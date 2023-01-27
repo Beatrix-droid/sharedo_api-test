@@ -28,14 +28,14 @@ namespace ClientCredentials;
         public object? externalReference { get; set; }
         public string? description { get; set; }
         public string sharedoTypeSystemName { get; set; }
-        public string phaseSystemName { get; set; }
+        public string? phaseSystemName { get; set; }
         public string phaseName { get; set; }
         public bool phaseIsOpen { get; set; }
         public int priorityId { get; set; }
         public object? currencyCode { get; set; }
         public object? timeZone { get; set; }
         public KeyFactsAspectData aspectData { get; set; }
-        public string originalSharedoType { get; set;}
+        public string? originalSharedoType { get; set;}
 
     }
 

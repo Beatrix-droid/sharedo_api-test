@@ -53,8 +53,8 @@ public class ApiMethods{
 
 
 
-        public static async Task<string> GetWorkID(Parameters config, string token, string MatterReference)
-            // a method that retrieves a work Id item from a matter reference number. Takes the matter reference number and the authentication token as paramters
+        public static async Task<WorkId> GetWorkID(Parameters config, string token, string MatterReference)
+            // a method that retrieves a work Id item and other important information from a matter reference number. Takes the matter reference number and the authentication token as paramters
             {
                 var timeSpan =  (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
                 var UnixEpoch = (long)timeSpan.TotalMilliseconds;
@@ -70,8 +70,8 @@ public class ApiMethods{
                     
 
                     WorkId deserialised_json = await response.Content.ReadFromJsonAsync<WorkId>();
-                    string id = deserialised_json.results[0].entityId;
-                    return id;
+
+                    return deserialised_json;
                 }
             }
         public static async Task<int> GetCategoryId(Parameters config, string token, string workItemID)
@@ -266,7 +266,7 @@ public static async Task UpdateTask(Parameters Config, string token,string workI
         Console.WriteLine("new task has been updated and assigned!");
     }
 
-public static async Task UpdateKeyFacts(Parameters Config, string token, string workItemID)
+public static async Task UpdateKeyFacts(Parameters Config, string token, string workItemID, string phase_name, string sharedo_type_name)
 
     // a function that updates a particular matter case key facts:
     // the string after the formbuilder refers to the particular form we are updating (the case key facts form) so will remain constant.  The ctx_cateogyr id refers to a particular drop dwon we are selecting. This will remain constant too
@@ -279,19 +279,17 @@ public static async Task UpdateKeyFacts(Parameters Config, string token, string 
         request = new HttpRequestMessage(HttpMethod.Post, url);
 
         KeyFactsAspectData keyaspects = new KeyFactsAspectData{
-            formBuilder="{\"formData\":{\"vm-rpa-process-13-01\":\"500000128\"},\"sharedoId\":\"0f253147-d7c0-41a7-ac13-5037359be520\",\"formId\":\"2381f919-9451-4242-96f0-52ecbb183f18\",\"formIds\":[\"35D86F40-CBD1-4E55-8BCF-CB33C15C9EDD\",\"14b9fc48-9201-4157-99c7-8fb7036c3c33\",\"2381f919-9451-4242-96f0-52ecbb183f18\"]}",
-
+            formBuilder= "{\"formData\":{\"vm-rpa-process-13-01\":\"500000128\"},\"sharedoId\":\"" + workItemID + "\",\"formId\":\"2381f919-9451-4242-96f0-52ecbb183f18\",\"formIds\":[\"35D86F40-CBD1-4E55-8BCF-CB33C15C9EDD\",\"14b9fc48-9201-4157-99c7-8fb7036c3c33\",\"2381f919-9451-4242-96f0-52ecbb183f18\"]}" 
             };
         UpdateKeyFacts keyFacts = new UpdateKeyFacts{
             id=workItemID,
             phaseIsOpen=true,
             priorityId=9001,
-            phaseName="Litigation",
+            phaseName=phase_name,
             referenceIsUserProvided=false,
             titleIsUserProvided=true,
-            phaseSystemName="matter-dispute-defendant-litigation",
-            sharedoTypeSystemName="matter-dispute-defendant-pi-public-liability",
-            originalSharedoType="matter-dispute-defendant-pi-public-liability",
+            sharedoTypeSystemName=sharedo_type_name
+
         };
 
         
