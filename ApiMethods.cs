@@ -1,42 +1,16 @@
-﻿
 using System.Net.Http.Json;
 using System.Text;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace ClientCredentials
-{
-    public class Program
-    {
-        static async Task Main(string[] args)
-        {
-            Parameters config = new Parameters(args);
-            if( !config.IsValid )
-            {
-                Console.Write(config.Usage);
-                return;
-            }
-            var token = await GetToken(config);
-            //a sample call to get a work id
-            string work_id = await GetWorkID(config, token,"BISJQ"); 
-            //int category_id = await GetCategoryId(config, token, work_id);
-            
-            string task_id = await CreateTask(config, token, work_id, $"post task no 105 with c#", "c# > uipath");
-            await UpdateTask(config, token, work_id, "new title!!", "updated description", task_id);
-
-            Console.WriteLine(task_id);
-            
-        }
-    
+namespace ClientCredentials;
 
 
+public class ApiMethods{
 
-
-
-
-    
-            static async Task<string> GetToken(Parameters config)
+// a class containing all the methods used in Main.cs
+           public static async Task<string> GetToken(Parameters config)
             //a method that authenticates via the api and returns a token allowing one to impersonate a user
             {
                 var auth = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{config.ClientId}:{config.ClientSecret}"));
@@ -62,8 +36,7 @@ namespace ClientCredentials
                 }
             }
         
-
-        static async Task<UserInfoResponse> GetProfile(Parameters config, string token)
+        public static async Task<UserInfoResponse> GetProfile(Parameters config, string token)
          //a method that makes an api call to get information on a sharedo user. Takes the authentication token as a parameter
             {
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"{config.Api}/api/security/userInfo");
@@ -80,7 +53,7 @@ namespace ClientCredentials
 
 
 
-        static async Task<string> GetWorkID(Parameters config, string token, string MatterReference)
+        public static async Task<string> GetWorkID(Parameters config, string token, string MatterReference)
             // a method that retrieves a work Id item from a matter reference number. Takes the matter reference number and the authentication token as paramters
             {
                 var timeSpan =  (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
@@ -101,9 +74,7 @@ namespace ClientCredentials
                     return id;
                 }
             }
-
-
-        static async Task<int> GetCategoryId(Parameters config, string token, string workid)
+        public static async Task<int> GetCategoryId(Parameters config, string token, string workid)
             // a method that returns a category id when we feed in its  work item's id: 
             {
                 var timeSpan =  (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
@@ -125,7 +96,7 @@ namespace ClientCredentials
 
             }
 
-        static async Task<string> SharedoSysName(Parameters config, string token, string workid)
+        public static async Task<string> SharedoSysName(Parameters config, string token, string workid)
             // a method that returns a work id's system name when we feed in its  work item's id: 
             {
                 var timeSpan =  (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
@@ -146,7 +117,7 @@ namespace ClientCredentials
                 }
             }
 
-        static async Task PostComment(Parameters config, string token, string workId, string yourComment)
+        public static async Task PostComment(Parameters config, string token, string workId, string yourComment)
             // a method that allows a user to post a comment to a specific workid
             {   
                 HttpClient client = new HttpClient();
@@ -184,9 +155,7 @@ namespace ClientCredentials
                 
 
             }
-        
-
-    static async Task<PaymentRequestInfo> GetPayMentRequests(Parameters Config, string token, string workid)
+    public static async Task<PaymentRequestInfo> GetPayMentRequests(Parameters Config, string token, string workid)
             // a function that gets payment request info based on the work if you pass in
             {
                 string url = $"{Config.Api}/api/listview/core-case-payments/20/1/paymentRequestDate/asc/?view=table&withCounts=1&contextId={workid}";
@@ -204,7 +173,7 @@ namespace ClientCredentials
                     return deserialised_json;
                 } 
             }
-    static async Task<string> CreateTask(Parameters Config, string token,  string work_item_id,string task_title, string task_description)
+    public static async Task<string> CreateTask(Parameters Config, string token,  string work_item_id,string task_title, string task_description)
     {
         //a function that creates a task on sharedo for a particular matter. Accepts a task title and task description, and the work item id you want to
         // assign the task to. Returns the task id as a string
@@ -244,30 +213,30 @@ namespace ClientCredentials
                                                     titleIsUserProvided=true
                                                 };
 
-                //serialise it and prepare the payload
-                var JsonifiedTask= JsonConvert.SerializeObject(new_task);
-                StringContent JsonString = new StringContent( JsonifiedTask, Encoding.UTF8, "application/json");
+        //serialise it and prepare the payload
+        var JsonifiedTask= JsonConvert.SerializeObject(new_task);
+        StringContent JsonString = new StringContent( JsonifiedTask, Encoding.UTF8, "application/json");
                 
-                //attach the payload to the request message
-                request.Content= JsonString; //content we are sending across
+        //attach the payload to the request message
+        request.Content= JsonString; //content we are sending across
 
-                //now add the headers to authenticate:
-                client.DefaultRequestHeaders.Add("accept", "application/json");
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+        //now add the headers to authenticate:
+        client.DefaultRequestHeaders.Add("accept", "application/json");
+        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
 
-                //send request over and await the response
-                response =await client.SendAsync(request);
-                response.EnsureSuccessStatusCode(); //prints out an error if the response was not 200
+        //send request over and await the response
+        response =await client.SendAsync(request);
+        response.EnsureSuccessStatusCode(); //prints out an error if the response was not 200
 
-                var responsebody= await response.Content.ReadAsStringAsync();
-                string task_id=responsebody.ToString();
-                task_id=task_id.Replace("\"", "");
-                Console.WriteLine("task has been posted!");
-                return task_id;        
+        var responsebody= await response.Content.ReadAsStringAsync();
+        string task_id=responsebody.ToString();
+        task_id=task_id.Replace("\"", "");
+        Console.WriteLine("task has been posted!");
+        return task_id;        
         }
 
 
-static async Task UpdateTask(Parameters Config, string token,string work_item_id, string task_title, string task_description, string task_id){
+public static async Task UpdateTask(Parameters Config, string token,string work_item_id, string task_title, string task_description, string task_id){
         //a function that assignes someone on sharedo for a particular task for a matter. 
 
         HttpClient client = new HttpClient();
@@ -295,18 +264,7 @@ static async Task UpdateTask(Parameters Config, string token,string work_item_id
         response.EnsureSuccessStatusCode(); //prints out an error if the response was not 200
 
         var responsebody= await response.Content.ReadAsStringAsync();
-    
         Console.WriteLine("new task has been updated and assigned!");
     }
-
-
-    }
+    
 }
-
-
-// title RPA - PO not approved. Chase.
-//no description required
-// assign to matter owner
-//due date is the current date
-//update key facts (not in task)
-//vm rpa process not yet approved 13.01

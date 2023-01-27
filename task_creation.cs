@@ -1,6 +1,4 @@
-namespace ClientCredentials{
-// Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
-   // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
+namespace ClientCredentials;
     public class AspectData
     {
         public string workScheduling { get; set; }
@@ -32,5 +30,3 @@ namespace ClientCredentials{
     }
 
 
-
-}

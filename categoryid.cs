@@ -1,5 +1,5 @@
-namespace ClientCredentials
-{
+namespace ClientCredentials;
+
     public class CategoryId
     {
         public string id {get; set; } 
@@ -23,4 +23,4 @@ namespace ClientCredentials
         public string? timeZone {get;set;}
 
     }
-}
+

@@ -1,4 +1,4 @@
-namespace ClientCredentials{
+namespace ClientCredentials;
 
     public class Comment{
         public string comment {get;set;}
@@ -8,4 +8,4 @@ namespace ClientCredentials{
 
 
     }
-}
+

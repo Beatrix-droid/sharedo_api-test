@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace ClientCredentials{
+namespace ClientCredentials;
 
     public class RpaForm{
         public string sharedoId {get;set;}
@@ -19,5 +19,5 @@ namespace ClientCredentials{
         [JsonProperty(PropertyName="vm-rpa-process-13-01")]
         public int vmRpaProcess1301 {get; set;}
     }
-}
+
 

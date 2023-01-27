@@ -1,5 +1,4 @@
-namespace ClientCredentials
-{
+namespace ClientCredentials;
     public class WorkId
     {
         public string resultTemplate {get;set;}
@@ -43,6 +42,6 @@ namespace ClientCredentials
         public string phaseState {get;set;}
         public string? crumbs {get;set;}
     }
-    }
+
 
 

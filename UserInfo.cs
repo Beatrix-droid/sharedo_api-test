@@ -1,9 +1,6 @@
-using System;
-using System.Linq;
-using System.Collections.Generic;
 
-namespace ClientCredentials
-{
+namespace ClientCredentials;
+
     public class UserInfoResponse
     {
         public bool IsAuthenticated{ get; set; }
@@ -61,4 +58,3 @@ namespace ClientCredentials
             Console.WriteLine($": {output}");
         }
     }
-}

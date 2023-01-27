@@ -1,7 +1,6 @@
-using System;
 
-namespace ClientCredentials
-{
+namespace ClientCredentials;
+
     public class Parameters
     {
         public string[] Args{ get; }
@@ -41,4 +40,4 @@ ClientCredentialsFixed.exe -Identity [{Sensitive_data.Id}]
                            -ClientSecret [{Sensitive_data.Cs}]
         ";
     }
-}
+
