@@ -173,7 +173,7 @@ public class ApiMethods{
                     return deserialised_json;
                 } 
             }
-    public static async Task<string> CreateTask(Parameters Config, string token,  string work_item_id,string task_title, string task_description)
+    public static async Task<string> CreateTask(Parameters Config, string token,  string work_item_id,string task_title)
     {
         //a function that creates a task on sharedo for a particular matter. Accepts a task title and task description, and the work item id you want to
         // assign the task to. Returns the task id as a string
@@ -201,7 +201,6 @@ public class ApiMethods{
 
         Create_A_Task new_task = new Create_A_Task{
                                                     aspectData=aspects,
-                                                    description=$"{task_description}<br>",
                                                     originalSharedoType="Task",
                                                     parentSharedoId=work_item_id,
                                                     phaseIsOpen=true,
@@ -236,7 +235,7 @@ public class ApiMethods{
         }
 
 
-public static async Task UpdateTask(Parameters Config, string token,string work_item_id, string task_title, string task_description, string task_id){
+public static async Task UpdateTask(Parameters Config, string token,string work_item_id, string task_id){
         //a function that assignes someone on sharedo for a particular task for a matter. 
 
         HttpClient client = new HttpClient();

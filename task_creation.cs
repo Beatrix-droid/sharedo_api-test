@@ -20,7 +20,7 @@ namespace ClientCredentials;
         public bool titleIsUserProvided { get; set; }
         public object categoryId { get; set; }
         public bool referenceIsUserProvided { get; set; }
-        public string description { get; set; }
+        public string? description { get; set; }
         public string sharedoTypeSystemName { get; set; }
         public bool phaseIsOpen { get; set; }
         public int priorityId { get; set; }
