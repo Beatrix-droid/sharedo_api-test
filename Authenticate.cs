@@ -22,7 +22,7 @@ namespace ClientCredentials
             string work_id = await GetWorkID(config, token,"BISJQ"); 
             //int category_id = await GetCategoryId(config, token, work_id);
             
-            await Create_A_Task(config, token, work_id, $"post task no 88 with c#", "c# > uipath");
+            await Create_A_Task(config, token, work_id, $"post task no 99 with c#", "c# > uipath");
         
             
         }
@@ -207,21 +207,24 @@ namespace ClientCredentials
     {
         //a function that creates a task on sharedo for a particular matter. Accepts a task title and task description, and the work item id you want to
         // assign the task to. Returns the task id as a string
-
         HttpClient client = new HttpClient();
-                HttpRequestMessage request;
-                HttpResponseMessage response;
+        HttpRequestMessage request;
+        HttpResponseMessage response;
 
         string url = $"{Config.Api}/api/aspects/sharedos/";
         request = new HttpRequestMessage(HttpMethod.Post, url);
+        DateTime dt =DateTime.Now;;
+        String.Format("{0:s}", dt);
 
         //create a sample task object
         AspectData aspects = new AspectData{
             tags="{\"tags\":[]}",
             taskDetails="{}",
-            taskDueDate="{\"dueDateTime\":\"2023-01-26T16:12:00+00:00\",\"dueDateTime_timeZone\":\"Europe/London\",\"reminders\":[]}",
+            taskDueDate="{\"dueDateTime\":\""    + String.Format("{0:s}", dt)+ "\""+     ",\"dueDateTime_timeZone\":\"Europe/London\",\"reminders\":[]}",
             workScheduling="{\"linkDueDateToExpectedStart\":false,\"linkDueDateToExpectedEnd\":true}"
         };
+        
+
         
         List<Object> related = new List<object>{
         };
