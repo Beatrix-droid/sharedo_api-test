@@ -22,19 +22,19 @@ namespace ClientCredentials
             string work_id = await GetWorkID(config, token,"BISJQ"); 
             //int category_id = await GetCategoryId(config, token, work_id);
             
-            await Create_A_Task(config, token, work_id, $"post task no 99 with c#", "c# > uipath");
-        
+            string task_id = await Create_A_Task(config, token, work_id, $"post task no 99 with c#", "c# > uipath");
+            //await Update_A_Task(config, token,work_id,"update a task title", "update task description",task_id);
             
         }
     
+
+
+
+
+
+
     
-        
-        
-    
-
-
-
-        static async Task<string> GetToken(Parameters config)
+            static async Task<string> GetToken(Parameters config)
             //a method that authenticates via the api and returns a token allowing one to impersonate a user
             {
                 var auth = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{config.ClientId}:{config.ClientSecret}"));
@@ -217,7 +217,7 @@ namespace ClientCredentials
         String.Format("{0:s}", dt);
 
         //create a sample task object
-        AspectData aspects = new AspectData{
+         AspectData aspects = new AspectData{
             tags="{\"tags\":[]}",
             taskDetails="{}",
             taskDueDate="{\"dueDateTime\":\""    + String.Format("{0:s}", dt)+ "\""+     ",\"dueDateTime_timeZone\":\"Europe/London\",\"reminders\":[]}",
@@ -264,6 +264,65 @@ namespace ClientCredentials
                 return task_id;        
         }
 
+
+/*    static async Task Update_A_Task(Parameters Config, string token,string work_item_id, string task_title, string task_description, string task_id){
+        //a function that assignes someone on sharedo for a particular task for a matter. 
+
+        HttpClient client = new HttpClient();
+        HttpRequestMessage request;
+        HttpResponseMessage response;
+
+        string url = $"{Config.Api}/api/aspects/sharedos/{task_id}";
+        request = new HttpRequestMessage(HttpMethod.Post, url);
+     //create a sample task object
+        AspectData aspects = new AspectData{
+            tags="{\"tags\":[]}",
+            taskDetails="{}",
+            workScheduling="{\"linkDueDateToExpectedStart\":false,\"linkDueDateToExpectedEnd\":true}",
+            taskAssignedTo="{\"primaryOwner\":\"0727602c-24c0-413d-a286-39211965a395\",\"displayName\":\"Grant Swinburn\"}"
+        };
+        
+
+        
+        List<Object> related = new List<object>{
+        };
+
+        Create_A_Task new_task = new Create_A_Task{
+                                                    aspectData=aspects,
+                                                    id=task_id,
+                                                    title=task_title,
+                                                    description=$"{task_description}<br>",
+                                                    originalSharedoType="task",
+                                                    parentSharedoId=work_item_id,
+                                                    phaseIsOpen=true,
+                                                    priorityId=9001,
+                                                    referenceIsUserProvided=false,
+                                                    relatedSharedos=related,
+                                                    phaseName="new",
+                                                    phaseSystemName="task-new",
+                                                    sharedoTypeSystemName="task",
+                                                    titleIsUserProvided=true
+                                                };
+
+        //serialise it and prepare the payload
+        var JsonifiedTask= JsonConvert.SerializeObject(new_task);
+        StringContent JsonString = new StringContent( JsonifiedTask, Encoding.UTF8, "application/json");
+                
+        //attach the payload to the request message
+        request.Content= JsonString; //content we are sending across
+
+        //now add the headers to authenticate:
+        client.DefaultRequestHeaders.Add("accept", "application/json");
+        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+
+        //send request over and await the response
+        response =await client.SendAsync(request);
+        response.EnsureSuccessStatusCode(); //prints out an error if the response was not 200
+
+        var responsebody= await response.Content.ReadAsStringAsync();
+        Console.WriteLine("task has been updated!");
+    }
+*/
 
     }
 }

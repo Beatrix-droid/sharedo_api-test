@@ -28,9 +28,15 @@ namespace ClientCredentials{
         public AspectData aspectData { get; set; }
         public string originalSharedoType { get; set; }
         public List<object> relatedSharedos { get; set; }
-    
-    //currency code, id, phasename,  phase system name, reference, timezone
+       /*     public string? currencyCode{get;set;}
+            public string? id {get;set;}
+            public string? phaseName {get;set;}
+            public string phaseSystemName {get;set;}
+            public string? timeZone {get;set;}
+            public string? reference{get;set;}
+*/
     }
+
 
 
 }

@@ -9,11 +9,11 @@ namespace ClientCredentials
         public string phaseSystemName {get;set;}
 
         public int categoryId {get;set;}
-        public string title {get;set;}
+        public string? title {get;set;}
 
         public bool titleIsUserProvided {get;set;}
         public string? userTitle{get;set;}
-        public string description{get;set;}
+        public string? description{get;set;}
 
         public string reference {get;set;}
         public bool referenceIsUserProvided {get;set;}
