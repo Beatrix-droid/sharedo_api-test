@@ -74,13 +74,13 @@ public class ApiMethods{
                     return id;
                 }
             }
-        public static async Task<int> GetCategoryId(Parameters config, string token, string workid)
+        public static async Task<int> GetCategoryId(Parameters config, string token, string workItemID)
             // a method that returns a category id when we feed in its  work item's id: 
             {
                 var timeSpan =  (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
                 var UnixEpoch = (long)timeSpan.TotalMilliseconds;
 
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"{config.Api}/api/sharedo/{workid}/base?_={UnixEpoch}");
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"{config.Api}/api/sharedo/{workItemID}/base?_={UnixEpoch}");
                 request.Headers.Add("accept", "application/json");
                 request.Headers.Add("Authorization", $"Bearer {token}");
 
@@ -96,13 +96,13 @@ public class ApiMethods{
 
             }
 
-        public static async Task<string> SharedoSysName(Parameters config, string token, string workid)
+        public static async Task<string> SharedoSysName(Parameters config, string token, string workItemID)
             // a method that returns a work id's system name when we feed in its  work item's id: 
             {
                 var timeSpan =  (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
                 var UnixEpoch = (long)timeSpan.TotalMilliseconds;
 
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"{config.Api}/api/sharedo/{workid}/base?_={UnixEpoch}");
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"{config.Api}/api/sharedo/{workItemID}/base?_={UnixEpoch}");
                 request.Headers.Add("accept", "application/json");
                 request.Headers.Add("Authorization", $"Bearer {token}");
 
@@ -117,8 +117,8 @@ public class ApiMethods{
                 }
             }
 
-        public static async Task PostComment(Parameters config, string token, string workId, string yourComment)
-            // a method that allows a user to post a comment to a specific workid
+        public static async Task PostComment(Parameters config, string token, string workItemID, string yourComment)
+            // a method that allows a user to post a comment to a specific workItemID
             {   
                 HttpClient client = new HttpClient();
                 HttpRequestMessage request;
@@ -131,7 +131,7 @@ public class ApiMethods{
                 //create a sample comment object
                 Comment new_comment = new Comment{
                         comment = $"<p>{yourComment}</p>",
-                        sharedoId = workId,
+                        sharedoId = workItemID,
                 };
 
                 //serialise it and prepare the payload
@@ -155,10 +155,10 @@ public class ApiMethods{
                 
 
             }
-    public static async Task<PaymentRequestInfo> GetPayMentRequests(Parameters Config, string token, string workid)
+    public static async Task<PaymentRequestInfo> GetPayMentRequests(Parameters Config, string token, string workItemID)
             // a function that gets payment request info based on the work if you pass in
             {
-                string url = $"{Config.Api}/api/listview/core-case-payments/20/1/paymentRequestDate/asc/?view=table&withCounts=1&contextId={workid}";
+                string url = $"{Config.Api}/api/listview/core-case-payments/20/1/paymentRequestDate/asc/?view=table&withCounts=1&contextId={workItemID}";
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Add("accept", "application/json");
                 request.Headers.Add("Authorization", $"Bearer {token}");
@@ -173,7 +173,7 @@ public class ApiMethods{
                     return deserialised_json;
                 } 
             }
-    public static async Task<string> CreateTask(Parameters Config, string token,  string work_item_id,string task_title)
+    public static async Task<string> CreateTask(Parameters Config, string token,  string workItemID,string task_title)
     {
         //a function that creates a task on sharedo for a particular matter. Accepts a task title and task description, and the work item id you want to
         // assign the task to. Returns the task id as a string
@@ -202,7 +202,7 @@ public class ApiMethods{
         Create_A_Task new_task = new Create_A_Task{
                                                     aspectData=aspects,
                                                     originalSharedoType="Task",
-                                                    parentSharedoId=work_item_id,
+                                                    parentSharedoId=workItemID,
                                                     phaseIsOpen=true,
                                                     priorityId=9001,
                                                     referenceIsUserProvided=false,
@@ -235,7 +235,7 @@ public class ApiMethods{
         }
 
 
-public static async Task UpdateTask(Parameters Config, string token,string work_item_id, string task_id){
+public static async Task UpdateTask(Parameters Config, string token,string workItemID, string task_id){
         //a function that assignes someone on sharedo for a particular task for a matter. 
 
         HttpClient client = new HttpClient();
@@ -265,5 +265,52 @@ public static async Task UpdateTask(Parameters Config, string token,string work_
         var responsebody= await response.Content.ReadAsStringAsync();
         Console.WriteLine("new task has been updated and assigned!");
     }
+
+public static async Task UpdateKeyFacts(Parameters Config, string token, string workItemID)
+
+    // a function that updates a particular matter case key facts:
+    // the string after the formbuilder refers to the particular form we are updating (the case key facts form) so will remain constant.  The ctx_cateogyr id refers to a particular drop dwon we are selecting. This will remain constant too
+    {
+        HttpClient client = new HttpClient();
+        HttpRequestMessage request;
+        HttpResponseMessage response;
+        
+        string url =$"{Config.Api}/api/formbuilder/2381f919-9451-4242-96f0-52ecbb183f18?ctx_sharedoId={workItemID}&ctx_sharedoCategoryId=314171&ctx_jurisdiction=5002601&ctx_sharedoTypeSystemName=vm-matterdispute-defendant-pd-utilities";
+        request = new HttpRequestMessage(HttpMethod.Post, url);
+
+        KeyFactsAspectData keyaspects = new KeyFactsAspectData{
+            formBuilder="{\"formData\":{\"vm-rpa-process-13-01\":\"500000128\"},\"sharedoId\":\"0f253147-d7c0-41a7-ac13-5037359be520\",\"formId\":\"2381f919-9451-4242-96f0-52ecbb183f18\",\"formIds\":[\"35D86F40-CBD1-4E55-8BCF-CB33C15C9EDD\",\"14b9fc48-9201-4157-99c7-8fb7036c3c33\",\"2381f919-9451-4242-96f0-52ecbb183f18\"]}",
+
+            };
+        UpdateKeyFacts keyFacts = new UpdateKeyFacts{
+            id=workItemID,
+            phaseIsOpen=true,
+            priorityId=9001,
+            phaseName="Litigation",
+            referenceIsUserProvided=false,
+            titleIsUserProvided=true,
+            phaseSystemName="matter-dispute-defendant-litigation",
+            sharedoTypeSystemName="matter-dispute-defendant-pi-public-liability",
+            originalSharedoType="matter-dispute-defendant-pi-public-liability",
+        };
+
+        
+
+                //serialise it and prepare the payload
+                var JsonifiedComment= JsonConvert.SerializeObject(keyFacts);
+                StringContent JsonString = new StringContent( JsonifiedComment, Encoding.UTF8, "application/json");
+
+                //attach the payload to the request message
+                request.Content= JsonString; //content we are sending across
+
+                //now add the headers to authenticate:
+                client.DefaultRequestHeaders.Add("accept", "application/json");
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+
+                //send request over and await the response
+                response =await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                Console.WriteLine("Key facts updated successfully!");
     
+    }
 }
