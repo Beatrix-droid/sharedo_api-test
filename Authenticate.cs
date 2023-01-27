@@ -22,8 +22,10 @@ namespace ClientCredentials
             string work_id = await GetWorkID(config, token,"BISJQ"); 
             //int category_id = await GetCategoryId(config, token, work_id);
             
-            string task_id = await Create_A_Task(config, token, work_id, $"post task no 99 with c#", "c# > uipath");
-            //await Update_A_Task(config, token,work_id,"update a task title", "update task description",task_id);
+            string task_id = await CreateTask(config, token, work_id, $"post task no 100 with c#", "c# > uipath");
+            await UpdateTask(config, token, work_id, "updated wityh new title", "updated description", task_id);
+
+            Console.WriteLine(task_id);
             
         }
     
@@ -180,8 +182,7 @@ namespace ClientCredentials
 
                 JObject obj = (JObject)JsonConvert.DeserializeObject(await responsebody);
                 
-                //Console.WriteLine($"Message has been sent!");
-                //Console.WriteLine(responsebody);
+
             }
         
 
@@ -203,7 +204,7 @@ namespace ClientCredentials
                     return deserialised_json;
                 } 
             }
-    static async Task<string> Create_A_Task(Parameters Config, string token,  string work_item_id,string task_title, string task_description)
+    static async Task<string> CreateTask(Parameters Config, string token,  string work_item_id,string task_title, string task_description)
     {
         //a function that creates a task on sharedo for a particular matter. Accepts a task title and task description, and the work item id you want to
         // assign the task to. Returns the task id as a string
@@ -221,7 +222,7 @@ namespace ClientCredentials
             tags="{\"tags\":[]}",
             taskDetails="{}",
             taskDueDate="{\"dueDateTime\":\""    + String.Format("{0:s}", dt)+ "\""+     ",\"dueDateTime_timeZone\":\"Europe/London\",\"reminders\":[]}",
-            workScheduling="{\"linkDueDateToExpectedStart\":false,\"linkDueDateToExpectedEnd\":true}"
+            workScheduling="{\"linkDueDateToExpectedStart\":false,\"linkDueDateToExpectedEnd\":true}",
         };
         
 
@@ -260,34 +261,36 @@ namespace ClientCredentials
 
                 var responsebody= await response.Content.ReadAsStringAsync();
                 string task_id=responsebody.ToString();
+                task_id=task_id.Replace("\"", "");
                 Console.WriteLine("task has been posted!");
                 return task_id;        
         }
 
 
-/*    static async Task Update_A_Task(Parameters Config, string token,string work_item_id, string task_title, string task_description, string task_id){
+   static async Task UpdateTask(Parameters Config, string token,string work_item_id, string task_title, string task_description, string task_id){
         //a function that assignes someone on sharedo for a particular task for a matter. 
 
         HttpClient client = new HttpClient();
         HttpRequestMessage request;
         HttpResponseMessage response;
 
-        string url = $"{Config.Api}/api/aspects/sharedos/{task_id}";
+        string url = $"{Config.Api}api/aspects/sharedos/{task_id}";
         request = new HttpRequestMessage(HttpMethod.Post, url);
+        
+        DateTime dt =DateTime.Now;;
+        String.Format("{0:s}", dt);
+    
      //create a sample task object
-        AspectData aspects = new AspectData{
+        UpdateAspectData aspects = new UpdateAspectData{
             tags="{\"tags\":[]}",
+            task="{\"dueDateTime\":\""    + String.Format("{0:s}", dt)+ "\"" +",\"regardingSharedoParticipantRoleId\":null,\"reminders\":[]}",
+            taskAssignedTo="{\"primaryOwner\":\"ce8726c8-aae0-4820-80b3-a381edd889a3\",\"displayName\":\"ACL - Legal Services - Handler\"}",
             taskDetails="{}",
             workScheduling="{\"linkDueDateToExpectedStart\":false,\"linkDueDateToExpectedEnd\":true}",
-            taskAssignedTo="{\"primaryOwner\":\"0727602c-24c0-413d-a286-39211965a395\",\"displayName\":\"Grant Swinburn\"}"
         };
         
 
-        
-        List<Object> related = new List<object>{
-        };
-
-        Create_A_Task new_task = new Create_A_Task{
+        Update_A_Task new_task = new Update_A_Task{
                                                     aspectData=aspects,
                                                     id=task_id,
                                                     title=task_title,
@@ -297,7 +300,6 @@ namespace ClientCredentials
                                                     phaseIsOpen=true,
                                                     priorityId=9001,
                                                     referenceIsUserProvided=false,
-                                                    relatedSharedos=related,
                                                     phaseName="new",
                                                     phaseSystemName="task-new",
                                                     sharedoTypeSystemName="task",
@@ -320,9 +322,10 @@ namespace ClientCredentials
         response.EnsureSuccessStatusCode(); //prints out an error if the response was not 200
 
         var responsebody= await response.Content.ReadAsStringAsync();
-        Console.WriteLine("task has been updated!");
+    
+        Console.WriteLine("task has been updated and assigned!");
     }
-*/
+
 
     }
 }
