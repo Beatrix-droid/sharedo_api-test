@@ -22,8 +22,8 @@ namespace ClientCredentials
             string work_id = await GetWorkID(config, token,"BISJQ"); 
             //int category_id = await GetCategoryId(config, token, work_id);
             
-            string task_id = await CreateTask(config, token, work_id, $"post task no 100 with c#", "c# > uipath");
-            await UpdateTask(config, token, work_id, "updated wityh new title", "updated description", task_id);
+            string task_id = await CreateTask(config, token, work_id, $"post task no 105 with c#", "c# > uipath");
+            await UpdateTask(config, token, work_id, "new title!!", "updated description", task_id);
 
             Console.WriteLine(task_id);
             
@@ -218,7 +218,7 @@ namespace ClientCredentials
         String.Format("{0:s}", dt);
 
         //create a sample task object
-         AspectData aspects = new AspectData{
+        AspectData aspects = new AspectData{
             tags="{\"tags\":[]}",
             taskDetails="{}",
             taskDueDate="{\"dueDateTime\":\""    + String.Format("{0:s}", dt)+ "\""+     ",\"dueDateTime_timeZone\":\"Europe/London\",\"reminders\":[]}",
@@ -267,47 +267,20 @@ namespace ClientCredentials
         }
 
 
-   static async Task UpdateTask(Parameters Config, string token,string work_item_id, string task_title, string task_description, string task_id){
+static async Task UpdateTask(Parameters Config, string token,string work_item_id, string task_title, string task_description, string task_id){
         //a function that assignes someone on sharedo for a particular task for a matter. 
 
         HttpClient client = new HttpClient();
         HttpRequestMessage request;
         HttpResponseMessage response;
-
-        string url = $"{Config.Api}api/aspects/sharedos/{task_id}";
+        string url = $"{Config.Api}api/tasks/{task_id}/assign/ce8726c8-aae0-4820-80b3-a381edd889a3?includeResults";
         request = new HttpRequestMessage(HttpMethod.Post, url);
         
-        DateTime dt =DateTime.Now;;
-        String.Format("{0:s}", dt);
     
-     //create a sample task object
-        UpdateAspectData aspects = new UpdateAspectData{
-            tags="{\"tags\":[]}",
-            task="{\"dueDateTime\":\""    + String.Format("{0:s}", dt)+ "\"" +",\"regardingSharedoParticipantRoleId\":null,\"reminders\":[]}",
-            taskAssignedTo="{\"primaryOwner\":\"ce8726c8-aae0-4820-80b3-a381edd889a3\",\"displayName\":\"ACL - Legal Services - Handler\"}",
-            taskDetails="{}",
-            workScheduling="{\"linkDueDateToExpectedStart\":false,\"linkDueDateToExpectedEnd\":true}",
-        };
-        
-
-        Update_A_Task new_task = new Update_A_Task{
-                                                    aspectData=aspects,
-                                                    id=task_id,
-                                                    title=task_title,
-                                                    description=$"{task_description}<br>",
-                                                    originalSharedoType="task",
-                                                    parentSharedoId=work_item_id,
-                                                    phaseIsOpen=true,
-                                                    priorityId=9001,
-                                                    referenceIsUserProvided=false,
-                                                    phaseName="new",
-                                                    phaseSystemName="task-new",
-                                                    sharedoTypeSystemName="task",
-                                                    titleIsUserProvided=true
-                                                };
+        EmptyJson emptyPayload= new EmptyJson{};
 
         //serialise it and prepare the payload
-        var JsonifiedTask= JsonConvert.SerializeObject(new_task);
+        var JsonifiedTask= JsonConvert.SerializeObject(emptyPayload);
         StringContent JsonString = new StringContent( JsonifiedTask, Encoding.UTF8, "application/json");
                 
         //attach the payload to the request message
@@ -323,7 +296,7 @@ namespace ClientCredentials
 
         var responsebody= await response.Content.ReadAsStringAsync();
     
-        Console.WriteLine("task has been updated and assigned!");
+        Console.WriteLine("new task has been updated and assigned!");
     }
 
 
@@ -331,3 +304,9 @@ namespace ClientCredentials
 }
 
 
+// title RPA - PO not approved. Chase.
+//no description required
+// assign to matter owner
+//due date is the current date
+//update key facts (not in task)
+//vm rpa process not yet approved 13.01
