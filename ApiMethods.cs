@@ -236,13 +236,50 @@ public class ApiMethods{
         }
 
 
+
+
+ public static async Task<string> GetMatterOwnerID(Parameters Config, string token, string work_id){
+
+    // a function that gets a matter owners id
+    var timeSpan =  (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
+    var UnixEpoch = (long)timeSpan.TotalMilliseconds;
+
+    string url = $"{Config.Api}/api/sharedo/{work_id}/summary?_={UnixEpoch}";
+    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get,url);
+    request.Headers.Add("accept", "application/json");
+    request.Headers.Add("Authorization", $"Bearer {token}");
+
+    using(HttpClient client = new HttpClient())
+            {
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                var jsonString = await response.Content.ReadAsStreamAsync();
+                Participants json_response= await response.Content.ReadFromJsonAsync<Participants>(); 
+                List<Participant> people = json_response.participants;
+                
+                string user;
+                //find the matter owner in the response
+                foreach (Participant person in people){
+                    if (person.participantRoleSystemName=="matter-owner"){
+                    user = person.participantRoleId.ToString();
+                    return user;
+                    };
+                }
+                //return this if the right user is not found
+                user="not found";
+                return user;
+            }
+ }
+
+
+
 public static async Task UpdateTask(Parameters Config, string token,string work_item_id, string task_id){
         //a function that assignes someone on sharedo for a particular task for a matter. 
 
         HttpClient client = new HttpClient();
         HttpRequestMessage request;
         HttpResponseMessage response;
-        string url = $"{Config.Api}api/tasks/{task_id}/assign/ce8726c8-aae0-4820-80b3-a381edd889a3?includeResults";
+        string url = $"{Config.Api}api/tasks/{task_id}/assign/191e53b5-0177-4665-a5da-ac4e00ceae78?includeResults";
         request = new HttpRequestMessage(HttpMethod.Post, url);
         
     
@@ -274,11 +311,11 @@ public static async Task UpdateTask(Parameters Config, string token,string work_
 
         //a function that allows a user to update a purchase request 
 
-        string url=$"{Config.Api}api/v1/public/finance/paymentRequest​/{paymentRequest_Id}";
+        string url=$"{Config.Api}api/v1/public/finance/paymentRequest/{paymentRequest_Id}";
         HttpClient client = new HttpClient();
         HttpRequestMessage request;
         HttpResponseMessage response;        
-        request = new HttpRequestMessage(HttpMethod.Post, url);
+        request = new HttpRequestMessage(HttpMethod.Put, url);
 
     FormData data = new FormData{
         requisitionNumber= purchase_requsition_no
@@ -309,7 +346,7 @@ public static async Task UpdateTask(Parameters Config, string token,string work_
         //now add the headers to authenticate:
         client.DefaultRequestHeaders.Add("accept", "application/json");
         client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-
+        Console.WriteLine(url);
         //send request over and await the response
         response =await client.SendAsync(request);
         response.EnsureSuccessStatusCode(); //prints out an error if the response was not 200
